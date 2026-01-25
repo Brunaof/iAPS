@@ -23,7 +23,7 @@ DEVICE_NAME = ENV["DEVICE_NAME"]
 DEVICE_ID = ENV["DEVICE_ID"]
 ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
 
-APP_IDENTIFIER = ENV.fetch('APP_IDENTIFIER') { "com.brunafornazza.iaps.#{9B75PM7469}.FreeAPS" }
+APP_IDENTIFIER = ENV.fetch('APP_IDENTIFIER') { "com.brunafornazza.iaps" }
 
 if ENV['BUILD_GROUP']
   File.write('../ConfigOverride.xcconfig', "COPYRIGHT_NOTICE = #{ENV['BUILD_GROUP']}\n", mode: 'a')
