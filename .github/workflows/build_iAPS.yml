@@ -87,8 +87,9 @@ jobs:
           xcode-version: '16.0'
 
       - name: Download iOS 18.0 SDK / Platform
-        run: xcodebuild -downloadPlatform iOS
-             xcodebuild -downloadPlatform watchOS
+        run: |
+          xcodebuild -downloadPlatform iOS
+          xcodebuild -downloadPlatform watchOS
       
       - name: Checkout Repo for syncing
         if: |
