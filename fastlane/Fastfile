@@ -127,6 +127,7 @@ platform :ios do
       scheme: "FreeAPSWorkspace",
       output_name: "iAPS.ipa",
       configuration: "Release",
+      destination: 'generic/platform=iOS,name=Any iOS Device',
       buildlog_path: 'buildlog'
     )
 
