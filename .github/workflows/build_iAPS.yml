@@ -68,7 +68,7 @@ jobs:
   build:
     name: Build
     needs: [check_certs,check_latest_from_upstream]
-    runs-on: macos-15
+    runs-on: macos-14
     permissions:
       contents: write
     steps:
@@ -84,7 +84,7 @@ jobs:
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1 
         with:
-          xcode-version: '16.0'
+          xcode-version: '15.4'
       
       - name: Checkout Repo for syncing
         if: |
