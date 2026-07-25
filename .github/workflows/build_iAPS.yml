@@ -157,19 +157,25 @@ jobs:
               except Exception:
                   pass
 
-          # 2. Desativa altool no Fastfile (incompativel com Xcode 16)
+          # 2. Ajusta o Fastfile para passar explicitamente o arquivo .ipa
           fastfiles = glob.glob('**/Fastfile', recursive=True)
           for path in fastfiles:
               try:
                   with open(path, 'r', encoding='utf-8') as f:
                       content = f.read()
-                  if 'altool:' not in content:
-                      updated = content.replace('upload_to_testflight(', 'upload_to_testflight(\n      altool: false,')
-                      with open(path, 'w', encoding='utf-8') as f:
-                          f.write(updated)
-                      print(f'Fastfile atualizado: {path}')
-              except Exception:
-                  pass
+                  
+                  # Limpa o parametro invalido altool
+                  content = content.replace('altool: false,', '')
+                  
+                  # Forca o envio do arquivo ipa gerado pelo gym
+                  if 'ipa:' not in content:
+                      content = content.replace('upload_to_testflight(', 'upload_to_testflight(\n      ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],')
+                      
+                  with open(path, 'w', encoding='utf-8') as f:
+                      f.write(content)
+                  print(f'Fastfile atualizado: {path}')
+              except Exception as e:
+                  print(f'Erro Fastfile: {e}')
           "
       # Ensure compatible Bundler version for Fastlane (fastlane requires bundler < 3)
       - name: Install Bundler 2.x
