@@ -12,6 +12,8 @@
 
 default_platform(:ios)
 
+xcode_select "/Applications/Xcode_16.0.app"
+
 TEAMID = ENV["TEAMID"]
 GH_PAT = ENV["GH_PAT"]
 GITHUB_WORKSPACE = ENV["GITHUB_WORKSPACE"]
