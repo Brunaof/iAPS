@@ -136,27 +136,38 @@ jobs:
           submodules: recursive
           ref: ${{ env.TARGET_BRANCH }}
             
-      - name: Fix Swift Syntax
+      - name: Fix Swift & Fastfile
         run: |
           python3 -c "
           import glob, re
 
+          # 1. Corrige arquivos Swift
           files = glob.glob('**/*.swift', recursive=True)
           for path in files:
               try:
                   with open(path, 'r', encoding='utf-8', errors='ignore') as f:
                       code = f.read()
 
-                  # 1. Corrige vírgulas antes de ')' (na mesma linha ou com quebra de linha)
                   fixed_code = re.sub(r',\s*\)', ')', code)
-
-                  # 2. Corrige o ForEach do SnoozeRootView
                   fixed_code = fixed_code.replace('ForEach(0 ..< pickerTimes.count)', 'ForEach(pickerTimes.indices, id: \\.self)')
 
                   if fixed_code != code:
                       with open(path, 'w', encoding='utf-8') as f:
                           f.write(fixed_code)
-                      print(f'Corrigido: {path}')
+              except Exception:
+                  pass
+
+          # 2. Desativa altool no Fastfile (incompativel com Xcode 16)
+          fastfiles = glob.glob('**/Fastfile', recursive=True)
+          for path in fastfiles:
+              try:
+                  with open(path, 'r', encoding='utf-8') as f:
+                      content = f.read()
+                  if 'altool:' not in content:
+                      updated = content.replace('upload_to_testflight(', 'upload_to_testflight(\n      altool: false,')
+                      with open(path, 'w', encoding='utf-8') as f:
+                          f.write(updated)
+                      print(f'Fastfile atualizado: {path}')
               except Exception:
                   pass
           "
