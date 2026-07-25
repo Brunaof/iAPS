@@ -63,23 +63,6 @@ jobs:
       with:
         token: ${{ secrets.GH_PAT }}
         ref: alive
-
-    - name: Fix DanaKit Syntax
-    run: |
-      python3 -c "
-      import re
-      path = 'DanaKit/DanaKit/PumpManager/DanaKitPumpManager.swift'
-      try:
-          with open(path, 'r') as f:
-              text = f.read()
-          # Remove vírgulas sobressalentes antes de fechamento de parênteses
-              fixed_text = re.sub(r',\s*\)', ')', text)
-              with open(path, 'w') as f:
-                  f.write(fixed_text)
-              print('DanaKit corrigido com sucesso!')
-          except Exception as e:
-              print(f'Erro ao aplicar patch: {e}')
-          "
   
   # Builds iAPS
   build:
@@ -152,7 +135,21 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           submodules: recursive
           ref: ${{ env.TARGET_BRANCH }}
-
+      
+      - name: Fix DanaKit Syntax
+        run: |
+          python3 -c "
+          import glob, re
+          files = glob.glob('**/DanaKitPumpManager.swift', recursive=True)
+          for path in files:
+              with open(path, 'r') as f:
+                  code = f.read()
+              fixed_code = re.sub(r',\s*(\n\s*\))', r'\1', code)
+              with open(path, 'w') as f:
+                  f.write(fixed_code)
+              print(f'Corrigido: {path}')
+          "
+          
       # Ensure compatible Bundler version for Fastlane (fastlane requires bundler < 3)
       - name: Install Bundler 2.x
         run: |
