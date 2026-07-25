@@ -140,6 +140,8 @@ jobs:
         run: |
           python3 -c "
           import glob, re
+
+          # 1. Corrige vírgulas antes de fecha-parênteses
           files = glob.glob('**/*.swift', recursive=True)
           for path in files:
               try:
@@ -149,9 +151,22 @@ jobs:
                   if fixed_code != code:
                       with open(path, 'w', encoding='utf-8') as f:
                           f.write(fixed_code)
-                      print(f'Corrigido: {path}')
               except Exception:
                   pass
+
+          # 2. Corrige o ForEach do SnoozeRootView
+          snooze_files = glob.glob('**/SnoozeRootView.swift', recursive=True)
+          for path in snooze_files:
+              try:
+                  with open(path, 'r', encoding='utf-8') as f:
+                      code = f.read()
+                  fixed_code = code.replace('ForEach(0 ..< pickerTimes.count)', 'ForEach(pickerTimes.indices, id: \\.self)')
+                  if fixed_code != code:
+                      with open(path, 'w', encoding='utf-8') as f:
+                          f.write(fixed_code)
+                      print(f'SnoozeRootView corrigido com sucesso: {path}')
+              except Exception as e:
+                  print(f'Erro ao corrigir SnoozeRootView: {e}')
           "
           
       # Ensure compatible Bundler version for Fastlane (fastlane requires bundler < 3)
